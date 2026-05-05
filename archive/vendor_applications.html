@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Applications - Admin - Servicio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+
+    <div class="admin-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="admin_dashboard.php" class="nav-brand">
+                    <span class="surveycio-logo">SURVEYCIO</span> Admin
+                </a>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="admin_dashboard.php">
+                    <i class="ph ph-squares-four"></i> Dashboard Overview
+                </a>
+                <a href="#">
+                    <i class="ph ph-users"></i> Families (Health Data)
+                </a>
+                <a href="donor_list.html">
+                    <i class="ph ph-drop"></i> Donor List
+                </a>
+                <a href="vendor_applications.html" class="active">
+                    <i class="ph ph-storefront"></i> Vendor Applications
+                </a>
+                <a href="reports.html">
+                    <i class="ph ph-chart-bar"></i> Reports
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile" style="margin-bottom: 16px;">
+                    <div class="avatar" style="background: var(--text-main); color: white;">A</div>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: 600; font-size: 14px;">System Admin</span>
+                        <span style="font-size: 12px; color: var(--text-muted);">admin@servicio.gov</span>
+                    </div>
+                </div>
+                <a href="index.html" class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="ph ph-sign-out"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="admin-main">
+            <div class="page-header">
+                <h1>Vendor Applications</h1>
+                <p>Review and manage barangay business registrations.</p>
+            </div>
+
+            <!-- TABLE CONTAINER -->
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-search">
+                        <i class="ph ph-magnifying-glass" style="color: var(--text-muted);"></i>
+                        <input type="text" placeholder="Search business or owner...">
+                    </div>
+                    
+                    <select style="padding: 8px 16px; border: 1px solid var(--gray); border-radius: 8px; outline: none;">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Business Name</th>
+                            <th>Owner Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 500;">Aling Nena's Sari-Sari</td>
+                            <td>Nena Reyes</td>
+                            <td>Retail</td>
+                            <td><span class="badge yellow">Pending</span></td>
+                            <td style="text-align: right;">
+                                <button class="action-btn btn-view" title="View Details"><i class="ph ph-eye"></i></button>
+                                <button class="action-btn btn-approve" title="Approve"><i class="ph ph-check"></i></button>
+                                <button class="action-btn btn-reject" title="Reject"><i class="ph ph-x"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500;">Kuya Jun's BBQ</td>
+                            <td>Jun Dela Cruz</td>
+                            <td>Food & Beverage</td>
+                            <td><span class="badge green">Approved</span></td>
+                            <td style="text-align: right;">
+                                <button class="action-btn btn-view" title="View Details"><i class="ph ph-eye"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500;">Talyer ni Mang Tomas</td>
+                            <td>Tomas Santos</td>
+                            <td>Services</td>
+                            <td><span class="badge yellow">Pending</span></td>
+                            <td style="text-align: right;">
+                                <button class="action-btn btn-view" title="View Details"><i class="ph ph-eye"></i></button>
+                                <button class="action-btn btn-approve" title="Approve"><i class="ph ph-check"></i></button>
+                                <button class="action-btn btn-reject" title="Reject"><i class="ph ph-x"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 500;">Pisonet Corner</td>
+                            <td>Michael Lim</td>
+                            <td>Services</td>
+                            <td><span class="badge red">Rejected</span></td>
+                            <td style="text-align: right;">
+                                <button class="action-btn btn-view" title="View Details"><i class="ph ph-eye"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.btn-approve').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const businessName = row.cells[0].innerText;
+                if(confirm('Are you sure you want to approve ' + businessName + '?')) {
+                    row.cells[3].innerHTML = '<span class="badge green">Approved</span>';
+                    this.parentElement.innerHTML = '<button class="action-btn btn-view" title="View Details"><i class="ph ph-eye"></i></button>';
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-reject').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const businessName = row.cells[0].innerText;
+                if(confirm('Are you sure you want to reject ' + businessName + '?')) {
+                    row.cells[3].innerHTML = '<span class="badge red">Rejected</span>';
+                    this.parentElement.innerHTML = '<button class="action-btn btn-view" title="View Details"><i class="ph ph-eye"></i></button>';
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-view').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const businessName = this.closest('tr').cells[0].innerText;
+                alert('Viewing details for ' + businessName);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+

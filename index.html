@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicio - Barangay Health & Vendor System</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for modern icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="logo">
+            <span class="surveycio-logo">SURVEYCIO</span>
+        </div>
+        <nav>
+            <a href="#team">About</a>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+
+        <div class="overlay"></div>
+
+        <div class="hero-content">
+
+            <div class="hero-text">
+                <div class="badge">Official Barangay Portal</div>
+                <h1>Serbisyo para sa Barangay</h1>
+                <p>
+                    A platform for health monitoring and vendor onboarding, built to optimize public service workflows
+                    and enable faster, more effective emergency response.
+                </p>
+                <div class="features-list">
+                    <span><i class="ph ph-check-circle"></i> Fast Registration</span>
+                    <span><i class="ph ph-check-circle"></i> Secure Health Data</span>
+                    <span><i class="ph ph-check-circle"></i> Vendor Management</span>
+                </div>
+            </div>
+
+            <!-- AUTH CARD -->
+            <div class="login-card">
+                <!-- LOGIN SECTION -->
+                <div id="loginSection">
+                    <div class="login-header">
+                        <h2>Welcome Back</h2>
+                        <p>Access your barangay services</p>
+                    </div>
+
+                    <div id="errorNotification"
+                        style="display: none; background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; text-align: center; font-weight: 500;">
+                    </div>
+
+                    <form id="loginForm" action="actions/login.php" method="POST">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-envelope"></i>
+                                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-lock-key"></i>
+                                <input type="password" id="password" name="password" placeholder="Enter your password"
+                                    required>
+                            </div>
+                            <div style="text-align: right; margin-top: 8px;">
+                                <a href="javascript:void(0)"
+                                    onclick="document.getElementById('loginSection').style.display='none'; document.getElementById('forgotSection').style.display='block';"
+                                    style="color: var(--green); font-size: 13px; text-decoration: none; font-weight: 500;">Forgot
+                                    Password?</a>
+                            </div>
+                        </div>
+
+                        <div class="login-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="ph ph-sign-in"></i> Secure Login
+                            </button>
+                        </div>
+
+                        <div class="divider">
+                            <span>or</span>
+                        </div>
+
+                        <button type="button" class="btn-outline"
+                            onclick="document.getElementById('loginSection').style.display='none'; document.getElementById('registerSection').style.display='block';">
+                            Create an account
+                        </button>
+                    </form>
+                </div>
+
+                <!-- REGISTER SECTION -->
+                <div id="registerSection" style="display: none;">
+                    <div class="login-header">
+                        <h2>Create Account</h2>
+                        <p>Register for barangay services</p>
+                    </div>
+
+                    <form id="registerForm" action="actions/register.php" method="POST">
+                        <div class="form-group">
+                            <label for="reg_name">Full Name</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-user"></i>
+                                <input type="text" id="reg_name" name="full_name" placeholder="Enter your full name"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg_email">Email</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-envelope"></i>
+                                <input type="email" id="reg_email" name="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg_password">Password</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-lock-key"></i>
+                                <input type="password" id="reg_password" name="password" placeholder="Create a password"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="login-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="ph ph-user-plus"></i> Register
+                            </button>
+                        </div>
+
+                        <div class="divider">
+                            <span>or</span>
+                        </div>
+
+                        <button type="button" class="btn-outline"
+                            onclick="document.getElementById('registerSection').style.display='none'; document.getElementById('loginSection').style.display='block';">
+                            Back to Login
+                        </button>
+                    </form>
+                </div>
+
+                <!-- FORGOT PASSWORD SECTION -->
+                <div id="forgotSection" style="display: none;">
+                    <div class="login-header">
+                        <h2>Reset Password</h2>
+                        <p>Enter your email to set a new password</p>
+                    </div>
+
+                    <form id="forgotForm" action="actions/reset_password.php" method="POST">
+                        <div class="form-group">
+                            <label for="reset_email">Registered Email</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-envelope"></i>
+                                <input type="email" id="reset_email" name="email" placeholder="Enter your email"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reset_password">New Password</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-lock-key"></i>
+                                <input type="password" id="reset_password" name="new_password"
+                                    placeholder="Enter new password" required>
+                            </div>
+                        </div>
+
+                        <div class="login-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="ph ph-arrows-clockwise"></i> Update Password
+                            </button>
+                        </div>
+
+                        <div class="divider">
+                            <span>or</span>
+                        </div>
+
+                        <button type="button" class="btn-outline"
+                            onclick="document.getElementById('forgotSection').style.display='none'; document.getElementById('loginSection').style.display='block';">
+                            Back to Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="about" class="team">
+        <div class="section-header">
+            <h2>How It Works?</h2>
+            <p>Simple steps to get started</p>
+        </div>
+
+        <div class="team-container">
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-user-plus"></i></div>
+                <h3>1. Register Account</h3>
+                <p class="desc">Create an account for health monitoring or vendor registration.</p>
+            </div>
+
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-file-text"></i></div>
+                <h3>2. Submit Details</h3>
+                <p class="desc">Provide family health information or business documents.</p>
+            </div>
+
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-check-circle"></i></div>
+                <h3>3. Verification Process</h3>
+                <p class="desc">Your information is reviewed and validated by our admins.</p>
+            </div>
+
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-certificate"></i></div>
+                <h3>4. Access Records</h3>
+                <p class="desc">View health records or receive your digital business permit.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="team" style="padding-top: 0;">
+        <div class="section-header">
+            <h2>Key Features</h2>
+            <p>What makes Surveycio reliable</p>
+        </div>
+
+        <div class="team-container">
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-lock-key"></i></div>
+                <h3>Secure Data</h3>
+                <p class="desc">Top-notch security for your sensitive information.</p>
+            </div>
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-activity"></i></div>
+                <h3>Real-Time Monitoring</h3>
+                <p class="desc">Up-to-date tracking of health and vendor statuses.</p>
+            </div>
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-shield-check"></i></div>
+                <h3>Gov Compliance</h3>
+                <p class="desc">Adheres strictly to government regulations and standards.</p>
+            </div>
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-heartbeat"></i></div>
+                <h3>Health Support</h3>
+                <p class="desc">Dedicated modules for emergency blood needs and monitoring.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MEET THE TEAM -->
+    <section id="team" class="team">
+        <div class="section-header">
+            <h2>Meet the Team</h2>
+            <p>The developers behind Surveycio</p>
+        </div>
+
+        <div class="team-container" style="justify-content: center; flex-wrap: wrap;">
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-user"></i></div>
+                <h3>Wency A. Geraldo</h3>
+                <p class="role">Project Lead</p>
+                <p class="desc">Baranggay Health forms</p>
+            </div>
+
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-user"></i></div>
+                <h3>Prince Andre I. Samuco</h3>
+                <p class="role">UI Designer</p>
+                <p class="desc">User Interface Design</p>
+            </div>
+
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-user"></i></div>
+                <h3>Kate Nica C. Advincula</h3>
+                <p class="role">Front End Developer</p>
+                <p class="desc">Landing page / Front End</p>
+            </div>
+
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-user"></i></div>
+                <h3>Yhves M. Tolentino</h3>
+                <p class="role">Front End Developer</p>
+                <p class="desc">Main page / Front End</p>
+            </div>
+
+            <div class="card team-card">
+                <div class="avatar"><i class="ph ph-user"></i></div>
+                <h3>Mark Joseph L. Braza</h3>
+                <p class="role">BackEnd Developer</p>
+                <p class="desc">DB / Vendor Registration</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorDiv = document.getElementById('errorNotification');
+
+        if (urlParams.get('error') === 'invalid_credentials') {
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = '#fee2e2';
+            errorDiv.style.color = '#991b1b';
+            errorDiv.innerText = 'Wrong account credentials. Please try again.';
+        } else if (urlParams.get('error') === 'empty_fields') {
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = '#fee2e2';
+            errorDiv.style.color = '#991b1b';
+            errorDiv.innerText = 'Please fill out all fields.';
+        } else if (urlParams.get('error') === 'email_not_found') {
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = '#fee2e2';
+            errorDiv.style.color = '#991b1b';
+            errorDiv.innerText = 'Email not found in our records.';
+        } else if (urlParams.get('error') === 'weak_password') {
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = '#fee2e2';
+            errorDiv.style.color = '#991b1b';
+            errorDiv.innerText = 'Password must be at least 8 characters, include an uppercase letter, a number, and a special character.';
+            // Switch to register tab
+            document.getElementById('loginSection').style.display='none';
+            document.getElementById('registerSection').style.display='block';
+        } else if (urlParams.get('success') === 'password_updated') {
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = '#dcfce7';
+            errorDiv.style.color = '#166534';
+            errorDiv.innerText = 'Password successfully updated! You can now log in.';
+        } else if (urlParams.get('success') === 'registered') {
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = '#dcfce7';
+            errorDiv.style.color = '#166534';
+            errorDiv.innerText = 'Account successfully registered! You can now log in.';
+        }
+
+        // Hide the error message when the user starts typing to try again
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                if (errorDiv.style.display === 'block') {
+                    errorDiv.style.display = 'none';
+
+                    // Optional: remove the ?error parameter from the URL cleanly without reloading
+                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.pushState({ path: newUrl }, '', newUrl);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

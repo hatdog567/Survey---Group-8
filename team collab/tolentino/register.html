@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+
+    background: url("bgpho.jpg") center no-repeat;
+    background-size: cover;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(120,120,120,0.55);
+}
+
+.register-box {
+    position: relative;
+    background: #fff;
+    border: 2px solid #089700;
+    padding: 35px 40px;
+    width: 440px;
+    text-align: center;
+}
+
+.logo-image {
+    width: 270px;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    margin: 14px 0;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #089700;
+    font-family: 'Inter', sans-serif;
+}
+
+/* button */
+.btn-submit {
+    margin-top: 15px;
+    padding: 10px 22px;
+    background: #089700;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-submit:hover {
+    background: #067a00;
+}
+
+.footer-text {
+    margin-top: 18px;
+    font-size: 13px;
+    color: #555;
+}
+
+.footer-text a {
+    color: #089700;
+    text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="register-box">
+    <img src="name.png" class="logo-image">
+
+    <form action="dashboard.html">
+        <div class="form-group">
+            <input type="email" placeholder="Email">
+        </div>
+
+        <div class="form-group">
+            <input type="password" placeholder="Password">
+        </div>
+
+        <div class="form-group">
+            <input type="password" placeholder="Confirm Password">
+        </div>
+
+        <button class="btn-submit">Register</button>
+    </form>
+
+    <p class="footer-text">
+        Already have an account? <u><a href="login.html">Login</a></u>
+    </p>
+</div>
+
+</body>
+</html>

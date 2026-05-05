@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+
+    background-image: url("bgpho.jpg");
+    background-size: cover;
+    background-position: center;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background: #089700;
+    padding: 15px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-image {
+    height: 40px;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-buttons a {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.nav-buttons a:hover {
+    text-decoration: underline;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 120px 0;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 0 20px;
+}
+
+.section {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.box {
+    width: 450px;
+    min-height: 350px;
+
+    background: #fff;
+    border: 3px solid #089700;
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-start; 
+    align-items: center;         
+
+    text-align: center;
+
+    text-decoration: none;
+}
+.box h2 {
+    color: #089700;
+    font-size: 22px;
+    text-align: center;
+}
+
+.footer {
+    background: #089700;
+    color: white;
+    padding: 15px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <img src="name.png" alt="Surveycio" class="logo-image">
+
+    <div class="nav-buttons">
+        <a href="surveys.html">Surveys</a>
+        <a href="about.html">About</a>
+        <a href="profile.html">Profile</a>
+        <a href="landing.html">Logout</a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="container">
+        <div class="section">
+
+            <a href="monitor.html" class="box">
+                <h2>Barangay Health Monitor</h2>
+            </a>
+
+            <a href="business.html" class="box">
+                <h2>Business Registration</h2>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div>Diko makita</div>
+</div>
+
+</body>
+</html>
