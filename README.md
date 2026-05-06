@@ -1,6 +1,6 @@
-# Servicio - Barangay Health & Vendor Management System
+# Surveycio - Barangay Health & Vendor Management System
 
-**Servicio** is a comprehensive, web-based portal designed to modernize barangay (local government) operations. It seamlessly integrates household health monitoring, emergency blood donor tracking, and local vendor registration into a single, secure platform.
+**Surveycio** is a comprehensive, web-based portal designed to modernize barangay (local government) operations. It seamlessly integrates household health monitoring, emergency blood donor tracking, and local vendor registration into a single, secure platform.
 
 ---
 
