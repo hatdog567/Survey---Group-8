@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle File Upload
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = 'uploads/';
+        $upload_dir = '../uploads/';
         $file_extension = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
         // Securely name the file with unique ID
         $new_filename = uniqid('profile_') . '.' . $file_extension;

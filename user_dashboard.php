@@ -6,7 +6,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
 }
 
 $user_id = $_SESSION['user_id'];
-$full_name = $_SESSION['full_name'];
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
+
+$full_name = $user['full_name'];
 // Extract initials
 $words = explode(' ', $full_name);
 $initials = '';
@@ -59,7 +63,13 @@ $notifications = $stmt->fetchAll();
         </nav>
         <div class="user-profile">
             <a href="user_settings.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
-                <div class="avatar"><?= $initials ?></div>
+                <div class="avatar" style="overflow:hidden;">
+                    <?php if($user['profile_image'] !== 'default_avatar.png' && !empty($user['profile_image'])): ?>
+                        <img src="uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+                    <?php else: ?>
+                        <?= $initials ?>
+                    <?php endif; ?>
+                </div>
                 <span style="font-weight: 500;"><?= htmlspecialchars($full_name) ?></span>
             </a>
             <a href="user_settings.php" style="margin-left: 16px; color: var(--text-muted); text-decoration: none;" title="Account Settings"><i class="ph ph-gear"></i> Settings</a>
