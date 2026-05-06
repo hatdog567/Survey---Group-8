@@ -1,9 +1,9 @@
 <?php
 // submit_vendor.php
-require_once 'config/db.php';
+require_once '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.html');
     exit;
 }
 

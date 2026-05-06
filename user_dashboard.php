@@ -177,7 +177,7 @@ $notifications = $stmt->fetchAll();
     <script>
         document.querySelector('.stat-card i.ph-bell').parentElement.parentElement.addEventListener('click', function() {
             if (<?= $unread_notifs ?> > 0) {
-                fetch('mark_notifs_read.php', { method: 'POST' })
+                fetch('actions/mark_notifs_read.php', { method: 'POST' })
                     .then(() => {
                         // Dynamically decrease unread badge to 0
                         document.querySelector('.stat-card i.ph-bell').parentElement.nextElementSibling.querySelector('h3').innerText = '0';

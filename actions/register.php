@@ -12,18 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password) || !preg_match('/[\W_]/', $password)) {
-        header('Location: ../index.html?error=weak_password');
-        exit;
-    }
 
     try {
         // Check if email already exists
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
-            $_SESSION['error'] = 'Email is already registered.';
-            header('Location: ../index.html');
+            header('Location: ../index.html?error=email_exists');
             exit;
         }
 
@@ -36,8 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ../index.html?success=registered');
         exit;
     } catch(PDOException $e) {
-        $_SESSION['error'] = 'Database error during registration.';
-        header('Location: ../index.html');
+        header('Location: ../index.html?error=db_error');
         exit;
     }
 } else {

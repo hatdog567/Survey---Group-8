@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicio - Barangay Health & Vendor System</title>
+    <title>Surveycio - Barangay Health & Vendor System</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -328,14 +328,19 @@
             errorDiv.style.background = '#fee2e2';
             errorDiv.style.color = '#991b1b';
             errorDiv.innerText = 'Email not found in our records.';
-        } else if (urlParams.get('error') === 'weak_password') {
+        } else if (urlParams.get('error') === 'email_exists') {
             errorDiv.style.display = 'block';
             errorDiv.style.background = '#fee2e2';
             errorDiv.style.color = '#991b1b';
-            errorDiv.innerText = 'Password must be at least 8 characters, include an uppercase letter, a number, and a special character.';
+            errorDiv.innerText = 'Email is already registered. Please login instead.';
             // Switch to register tab
-            document.getElementById('loginSection').style.display='none';
-            document.getElementById('registerSection').style.display='block';
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('registerSection').style.display = 'block';
+        } else if (urlParams.get('error') === 'db_error') {
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = '#fee2e2';
+            errorDiv.style.color = '#991b1b';
+            errorDiv.innerText = 'Database error occurred. Please try again later.';
         } else if (urlParams.get('success') === 'password_updated') {
             errorDiv.style.display = 'block';
             errorDiv.style.background = '#dcfce7';
