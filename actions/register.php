@@ -3,6 +3,9 @@
 require_once '../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    session_unset();
+    session_destroy();
+    session_start();
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $fullName = trim($_POST['full_name'] ?? '');
