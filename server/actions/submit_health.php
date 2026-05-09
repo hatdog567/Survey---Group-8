@@ -2,7 +2,7 @@
 require_once '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../index.html');
+    header('Location: ../../client/index.html');
     exit;
 }
 
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $pdo->commit();
-        header('Location: ../user_dashboard.php?health_success=1');
+        header('Location: ../../client/user_dashboard.php?health_success=1');
         exit;
     } catch(PDOException $e) {
         $pdo->rollBack();

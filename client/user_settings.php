@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php';
+require_once '../server/config/db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header('Location: index.html');
     exit;
@@ -52,7 +52,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
         <div class="user-profile">
             <div class="avatar" style="overflow:hidden;">
                 <?php if($user['profile_image'] !== 'default_avatar.png' && !empty($user['profile_image'])): ?>
-                    <img src="uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="../server/uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
                 <?php else: ?>
                     <?= $initials ?>
                 <?php endif; ?>
@@ -97,12 +97,12 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                         </div>
                     <?php endif; ?>
 
-                    <form action="actions/update_profile.php" method="POST" enctype="multipart/form-data">
+                    <form action="../server/actions/update_profile.php" method="POST" enctype="multipart/form-data">
                         
                         <div style="display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 24px;">
                             <div class="profile-img-preview">
                                 <?php if(($user['profile_image'] ?? 'default_avatar.png') !== 'default_avatar.png' && !empty($user['profile_image'] ?? '')): ?>
-                                    <img src="uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; border-radius: 50%; object-fit:cover;">
+                                    <img src="../server/uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; border-radius: 50%; object-fit:cover;">
                                 <?php else: ?>
                                     <?= $initials ?>
                                 <?php endif; ?>
@@ -160,7 +160,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                         </div>
                     <?php endif; ?>
 
-                    <form action="actions/change_password.php" method="POST">
+                    <form action="../server/actions/change_password.php" method="POST">
                         <div style="display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 400px;">
                             <div class="form-group">
                                 <label>Current Password</label>

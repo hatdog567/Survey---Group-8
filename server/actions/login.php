@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
-        header('Location: ../index.html?error=empty_fields');
+        header('Location: ../../client/index.html?error=empty_fields');
         exit;
     }
 
@@ -23,21 +23,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['full_name'] = $user['full_name'];
 
             if ($user['role'] === 'admin') {
-                header('Location: ../admin_dashboard.php');
+                header('Location: ../../client/admin_dashboard.php');
             } else {
-                header('Location: ../user_dashboard.php');
+                header('Location: ../../client/user_dashboard.php');
             }
             exit;
         } else {
-            header('Location: ../index.html?error=invalid_credentials');
+            header('Location: ../../client/index.html?error=invalid_credentials');
             exit;
         }
     } catch(PDOException $e) {
-        header('Location: ../index.html?error=db_error');
+        header('Location: ../../client/index.html?error=db_error');
         exit;
     }
 } else {
-    header('Location: ../index.html');
+    header('Location: ../../client/index.html');
     exit;
 }
 ?>

@@ -247,11 +247,11 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             
             const formData = new FormData();
-            formData.append('business_name', document.querySelector('input[placeholder="Aling Nena\'s Veggie Stand"]').value);
+            formData.append('business_name', document.getElementById('business-name').value);
             formData.append('owner_name', document.getElementById('vendor-name').value);
             formData.append('business_type', document.getElementById('product-category').value);
-            formData.append('contact_number', document.querySelector('input[placeholder="09123456789"]').value);
-            formData.append('address', document.querySelector('input[placeholder="1020 Aling Nena\'s House"]').value);
+            formData.append('contact_number', document.getElementById('contact-number').value);
+            formData.append('address', document.getElementById('home-address').value);
             
             // Add validation before form submission
             if (!validateVendorForm()) {
@@ -259,16 +259,20 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             try {
-                const response = await fetch('actions/submit_vendor.php', {
+                const response = await fetch('../server/actions/submit_vendor.php', {
                     method: 'POST',
                     body: formData
                 });
                 const result = await response.json();
                 if(result.success) {
                     document.getElementById('step-5').classList.remove('active');
-                    document.getElementById('step-6').classList.add('active');
+                    const step6 = document.getElementById('step-6');
+                    if (step6) step6.classList.add('active');
                     const p6 = document.getElementById('p-6');
                     if(p6) p6.classList.add('active');
+                    
+                    // Reload page to show pending status
+                    setTimeout(() => window.location.reload(), 1500);
                 } else {
                     showToast('Failed to submit registration: ' + result.error);
                 }
@@ -322,11 +326,17 @@ function toggleSubmitBtn(checkbox) {
     }
 }
 
-/* 5. STATUS APPROVAL & PDF GENERATION */
-async function simulateApproval() {
-    const btn = document.getElementById('downloadPermit');
-    const icon = document.getElementById('status-icon');
-    const label = document.getElementById('status-label');
+/* 5. PDF GENERATION */
+window.generatePermitPDF = async function() {
+    const btn = document.getElementById('downloadPermitApproved');
+    if (btn && btn.disabled) return;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const vendorName = document.getElementById('vendor-name')?.value || "FRIEZA BATUNGBAKAL";
+    const productType = document.getElementById('product-category')?.value || "STREET FOOD VENDOR";
+    const year = 2026;
 
     const getImageData = (url) => {
         return new Promise((resolve, reject) => {
@@ -344,129 +354,120 @@ async function simulateApproval() {
         });
     };
 
-    btn.onclick = async function() {
-        if (btn.disabled) return;
+    try {
+        const sealData = await getImageData('assets/img/MANILA_SEAL.png');
+        const kanjiData = await getImageData('assets/img/KANJI_LOGO.png');
 
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        doc.addImage(sealData, 'PNG', 15, 10, 30, 30);
+        doc.addImage(kanjiData, 'PNG', 160, 10, 35, 35);
 
-        const vendorName = document.getElementById('vendor-name')?.value || "FRIEZA BATUNGBAKAL";
-        const productType = document.querySelector('select')?.value || "STREET FOOD VENDOR";
-        const dateIssued = new Date();
-        const day = dateIssued.getDate();
-        const month = dateIssued.toLocaleString('default', { month: 'long' });
-        const year = dateIssued.getFullYear();
+        doc.saveGraphicsState();
+        doc.setGState(new doc.GState({opacity: 0.15}));
+        doc.addImage(sealData, 'PNG', 45, 80, 120, 120);
+        doc.restoreGraphicsState();
+    } catch (err) {
+        console.error(err);
+    }
 
-        try {
-            const sealData = await getImageData('assets/img/MANILA_SEAL.png');
-            const kanjiData = await getImageData('assets/img/KANJI_LOGO.png');
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Republic of the Namek", 105, 15, { align: "center" });
+    doc.text("City of Goku", 105, 20, { align: "center" });
+    doc.text("Barangay XYZ", 105, 25, { align: "center" });
 
-            doc.addImage(sealData, 'PNG', 15, 10, 30, 30);
-            doc.addImage(kanjiData, 'PNG', 160, 10, 35, 35);
+    doc.setFontSize(16);
+    doc.text("OFFICE OF PUNONG BARANGAY", 105, 45, { align: "center" });
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text("BARANGAY VENDOR PERMIT", 105, 55, { align: "center" });
 
-            doc.saveGraphicsState();
-            doc.setGState(new doc.GState({opacity: 0.1}));
-            doc.addImage(sealData, 'PNG', 45, 80, 120, 120);
-            doc.restoreGraphicsState();
-        } catch (err) {
-            console.error(err);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text("Nature of Business:", 20, 75);
+    doc.setFont("helvetica", "bold");
+    doc.text(productType.toUpperCase(), 70, 75);
+
+    const infoY = 90;
+    doc.setFont("helvetica", "normal");
+    doc.text("Proprietor:", 20, infoY);
+    doc.text("Permit Number:", 20, infoY + 7);
+    doc.text("Address:", 20, infoY + 14);
+    doc.text("Business Location:", 20, infoY + 21);
+    doc.text("Status:", 20, infoY + 28);
+
+    doc.setFont("helvetica", "bold");
+    doc.text(vendorName.split(' ')[0].toUpperCase(), 70, infoY);
+    doc.text(`BRGY-VEND-2026-069`, 70, infoY + 7);
+    doc.text("Brgy. XYZ, Namek", 70, infoY + 14);
+    doc.text("Mobile within Brgy. Namek", 70, infoY + 21);
+    doc.text("Operating", 70, infoY + 28);
+
+    doc.text(`Valid Until: December 30, 2027`, 135, infoY + 21);
+    doc.text("Amount Paid: PHP 100.00", 135, infoY + 28);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    const bodyText = [
+        "This Permit is being issued subject to existing rules and regulations, provided however, that the necessary fees are paid to the Treasurer of the Barangay as assessed.",
+        "This is non-transferable and shall be deemed null and void upon failure by the owner to follow the said rules and regulations set forth by the Local Government Unit of Goku, Namek."
+    ];
+
+    let currentY = 145;
+    bodyText.forEach(line => {
+        const splitText = doc.splitTextToSize(line, 170);
+        // Add indentation to the first line of the paragraph
+        doc.text(splitText[0], 30, currentY);
+        for(let i=1; i<splitText.length; i++) {
+            doc.text(splitText[i], 20, currentY + (i*5));
         }
+        currentY += (splitText.length * 5) + 10;
+    });
 
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        doc.text("Republic of the Philippines", 105, 15, { align: "center" });
-        doc.text("City of Manila", 105, 20, { align: "center" });
-        doc.text("Barangay XYZ", 105, 25, { align: "center" });
+    doc.text(`GIVEN this 30th day of December, 2026 at Brgy XYZ, Goku, Namek`, 105, currentY + 5, { align: "center" });
 
-        doc.setFontSize(16);
-        doc.text("OFFICE OF PUNONG BARANGAY", 105, 35, { align: "center" });
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.text("BARANGAY VENDOR PERMIT", 105, 45, { align: "center" });
+    doc.setFont("helvetica", "bold");
+    doc.text("SON GOHAN", 150, 210);
+    doc.line(140, 211, 185, 211);
+    doc.setFont("helvetica", "normal");
+    doc.text("Punong Barangay", 148, 216);
 
-        doc.setFontSize(11);
-        doc.setFont("helvetica", "normal");
-        doc.text("Nature of Business:", 20, 65);
-        doc.setFont("helvetica", "bold");
-        doc.text(productType.toUpperCase(), 70, 65);
+    doc.setFont("helvetica", "bold");
+    doc.text(vendorName.toUpperCase(), 45, 225, { align: "center" });
+    doc.line(20, 226, 70, 226);
+    doc.setFont("helvetica", "normal");
+    doc.text("Owner", 45, 231, { align: "center" });
 
-        const infoY = 80;
-        doc.setFont("helvetica", "normal");
-        doc.text("Proprietor:", 20, infoY);
-        doc.text("Permit Number:", 20, infoY + 7);
-        doc.text("Address:", 20, infoY + 14);
-        doc.text("Business Location:", 20, infoY + 21);
-        doc.text("Status:", 20, infoY + 28);
+    // Certificate Box
+    doc.setLineWidth(0.5);
+    doc.line(120, 260, 180, 250); // bottom edge
+    doc.line(116, 235, 176, 225); // top edge
+    doc.line(116, 235, 120, 260); // left edge
+    doc.line(176, 225, 180, 250); // right edge
 
-        doc.setFont("helvetica", "bold");
-        doc.text(vendorName.toUpperCase(), 70, infoY);
-        doc.text(`BRGY-VEND-${year}-069`, 70, infoY + 7);
-        doc.text("Brgy. XYZ, Manila", 70, infoY + 14);
-        doc.text("Mobile within Brgy. XYZ", 70, infoY + 21);
-        doc.text("Operating", 70, infoY + 28);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.text("CERTIFIED TRUE COPY", 121, 240, { angle: 9.46 });
+    doc.setFont("helvetica", "normal");
+    doc.text("Signed: ________________", 119, 250, { angle: 9.46 });
+    doc.text("Date:   ________________", 118, 257, { angle: 9.46 });
 
-        doc.text(`Valid Until: December 30, ${year + 1}`, 135, infoY + 35);
-        doc.text("Amount Paid: PHP 100.00", 135, infoY + 42);
+    doc.save(`Barangay-Permit_${vendorName}.pdf`);
+};
 
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        const bodyText = [
-            "This Permit is being issued subject to existing rules and regulations, provided however, that the necessary fees are paid to the Treasurer of the Barangay as assessed.",
-            "This is non-transferable and shall be deemed null and void upon failure by the owner to follow the said rules and regulations set forth by the Local Government Unit of Manila."
-        ];
-
-        let currentY = 145;
-        bodyText.forEach(line => {
-            const splitText = doc.splitTextToSize(line, 170);
-            doc.text(splitText, 105, currentY, { align: "center" });
-            currentY += 15;
-        });
-
-        doc.text(`GIVEN this ${day}th day of ${month}, ${year} at Brgy XYZ, Manila`, 105, currentY + 5, { align: "center" });
-
-        doc.setFont("helvetica", "bold");
-        doc.text("SON GOHAN", 150, 210);
-        doc.line(140, 211, 185, 211);
-        doc.setFont("helvetica", "normal");
-        doc.text("Punong Barangay", 148, 216);
-
-        doc.setFont("helvetica", "bold");
-        doc.text(vendorName.toUpperCase(), 45, 220);
-        doc.line(20, 221, 85, 221);
-        doc.setFont("helvetica", "normal");
-        doc.text("Owner", 45, 226);
-
-        doc.rect(130, 240, 60, 25);
-        doc.setFontSize(9);
-        doc.setFont("helvetica", "bold");
-        doc.text("CERTIFIED TRUE COPY", 132, 246);
-        doc.setFont("helvetica", "normal");
-        doc.text("Signed: ________________", 132, 253);
-        doc.text("Date:   ________________", 132, 260);
-
-        doc.save(`Barangay-Permit_${vendorName}.pdf`);
-    };
-
-    setTimeout(() => {
-        if (icon) icon.innerHTML = "✅";
-        if (label) {
-            label.innerHTML = "Approved";
-            label.className = "status-approved";
-        }
-        btn.disabled = false;
-        btn.style.backgroundColor = "#27ae60";
-        btn.style.cursor = "pointer";
-        btn.innerHTML = "Download Custom Permit (PDF)";
-    }, 5000);
-}
+document.addEventListener("DOMContentLoaded", function() {
+    const downloadBtn = document.getElementById('downloadPermitApproved');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', window.generatePermitPDF);
+    }
+});
 
 // Add validation before form submission
 function validateVendorForm() {
-    const businessName = document.querySelector('input[placeholder="Aling Nena\'s Veggie Stand"]').value.trim();
+    const businessName = document.getElementById('business-name').value.trim();
     const ownerName = document.getElementById('vendor-name').value.trim();
     const businessType = document.getElementById('product-category').value.trim();
-    const contactNumber = document.querySelector('input[placeholder="09123456789"]').value.trim();
-    const address = document.querySelector('input[placeholder="1020 Aling Nena\'s House"]').value.trim();
+    const contactNumber = document.getElementById('contact-number').value.trim();
+    const address = document.getElementById('home-address').value.trim();
 
     if (!businessName || !ownerName || !businessType || !contactNumber || !address) {
         showToast('All fields are required. Please fill out the form completely.');

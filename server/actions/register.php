@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fullName = trim($_POST['full_name'] ?? '');
 
     if (empty($email) || empty($password) || empty($fullName)) {
-        header('Location: ../index.html?error=empty_fields');
+        header('Location: ../../client/index.html?error=empty_fields');
         exit;
     }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
-            header('Location: ../index.html?error=email_exists');
+            header('Location: ../../client/index.html?error=email_exists');
             exit;
         }
 
@@ -31,14 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$email, $hashedPassword, $fullName]);
 
         // Redirect back to login screen
-        header('Location: ../index.html?success=registered');
+        header('Location: ../../client/index.html?success=registered');
         exit;
     } catch(PDOException $e) {
-        header('Location: ../index.html?error=db_error');
+        header('Location: ../../client/index.html?error=db_error');
         exit;
     }
 } else {
-    header('Location: ../index.html');
+    header('Location: ../../client/index.html');
     exit;
 }
 ?>

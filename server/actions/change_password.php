@@ -3,7 +3,7 @@ require_once '../config/db.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../index.html');
+    header('Location: ../../client/index.html');
     exit;
 }
 
@@ -15,17 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'] ?? '';
 
     if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
-        header('Location: ../user_settings.php?pwd_error=' . urlencode('All fields are required.'));
+        header('Location: ../../client/user_settings.php?pwd_error=' . urlencode('All fields are required.'));
         exit;
     }
 
     if ($new_password !== $confirm_password) {
-        header('Location: ../user_settings.php?pwd_error=' . urlencode('New passwords do not match.'));
+        header('Location: ../../client/user_settings.php?pwd_error=' . urlencode('New passwords do not match.'));
         exit;
     }
 
     if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $new_password)) {
-        header('Location: ../user_settings.php?pwd_error=' . urlencode('Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.'));
+        header('Location: ../../client/user_settings.php?pwd_error=' . urlencode('Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.'));
         exit;
     }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
 
     if (!$user || !password_verify($current_password, $user['password'])) {
-        header('Location: ../user_settings.php?pwd_error=' . urlencode('Current password is incorrect.'));
+        header('Location: ../../client/user_settings.php?pwd_error=' . urlencode('Current password is incorrect.'));
         exit;
     }
 
@@ -43,9 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare('UPDATE users SET password = ? WHERE id = ?');
     $stmt->execute([$hashed_password, $user_id]);
 
-    header('Location: ../user_settings.php?pwd_success=1');
+    header('Location: ../../client/user_settings.php?pwd_success=1');
     exit;
 } else {
-    header('Location: ../user_settings.php');
+    header('Location: ../../client/user_settings.php');
     exit;
 }

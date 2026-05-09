@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php';
+require_once '../server/config/db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header('Location: index.html');
     exit;
@@ -47,7 +47,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
             <a href="user_settings.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
                 <div class="avatar" style="overflow:hidden;">
                     <?php if($user['profile_image'] !== 'default_avatar.png' && !empty($user['profile_image'])): ?>
-                        <img src="uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="../server/uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
                     <?php else: ?>
                         <?= $initials ?>
                     <?php endif; ?>
@@ -76,7 +76,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
             </div>
 
             <!-- FORM CONTENT -->
-            <form id="healthForm" action="actions/submit_health.php" method="POST">
+            <form id="healthForm" action="../server/actions/submit_health.php" method="POST">
                 
                 <!-- STEP 1 -->
                 <div id="step1">

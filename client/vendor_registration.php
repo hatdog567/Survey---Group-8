@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php';
+require_once '../server/config/db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header('Location: index.html');
     exit;
@@ -17,6 +17,11 @@ foreach ($words as $w) {
     if(!empty($w)) $initials .= strtoupper($w[0]);
 }
 if(strlen($initials)>2) $initials = substr($initials,0,2);
+
+// Check if user has an existing vendor application
+$stmt = $pdo->prepare("SELECT * FROM vendors WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+$stmt->execute([$user_id]);
+$vendor = $stmt->fetch();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +72,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
             <a href="user_settings.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
                 <div class="avatar" style="overflow:hidden;">
                     <?php if($user['profile_image'] !== 'default_avatar.png' && !empty($user['profile_image'])): ?>
-                        <img src="uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="../server/uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
                     <?php else: ?>
                         <?= $initials ?>
                     <?php endif; ?>
@@ -96,7 +101,9 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                 <div class="step" id="p-6">6. Certification</div>
             </div>
 
+            <div id="toast-container" style="display: none;">Please select at least one Product Type</div>
             <form id="registrationForm">
+                <?php if (!$vendor): ?>
                 <!-- Step 1: Business Details -->
                 <div class="step-container active" id="step-1">
                     <div class="Section-Title">1. Vendor's Detail</div>
@@ -115,11 +122,11 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                     <div class="Form-grid">
                         <div class="Field-group">
                             <label>Contact Number</label>
-                            <input type="text" placeholder="09123456789" required>
+                            <input type="text" id="contact-number" placeholder="09123456789" required>
                         </div>
                         <div class="Field-group">
                             <label>Home Address</label>
-                            <input type="text" placeholder="1020 Aling Nena's House" required>
+                            <input type="text" id="home-address" placeholder="1020 Aling Nena's House" required>
                         </div>
                     </div>
 
@@ -127,7 +134,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                     <div class="Form-grid">
                         <div class="Field-group">
                             <label>Business Name</label>
-                            <input type="text" placeholder="Aling Nena's Veggie Stand">
+                            <input type="text" id="business-name" placeholder="Aling Nena's Veggie Stand" required>
                         </div>
                         <div class="Field-group">
                             <label>Product Category</label>
@@ -191,7 +198,6 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                             </div>
                         </div>
                     </div>
-                    <div id="toast-container" style="display: none;">Please select at least one Product Type</div>
                     <button type="button" class="next-btn" onclick="nextStep(2)">Next Step</button>
                 </div> 
 
@@ -378,6 +384,59 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                     </div>
                 </div>
             </form>
+                <?php else: ?>
+                    <!-- Post-Submission Status Views -->
+                    <div class="step-container active" id="step-6">
+                        <div class="status-card" style="margin-top: 20px;">
+                            <?php if ($vendor['status'] === 'pending'): ?>
+                                <div class="status-icon" id="status-icon">⏳</div>
+                                <div class="Section-Title" style="text-align: center;">Registration Under Review</div>
+                                <p class="status-text">
+                                    Your registration has been submitted successfully. Our barangay officials are currently reviewing your documents. 
+                                    This process usually takes 1-3 working days.
+                                </p>
+                                <div class="info-box">
+                                    <p><strong>Business Name:</strong> <?= htmlspecialchars($vendor['business_name']) ?></p>
+                                    <p><strong>Status:</strong> <span class="status-pending" style="color: #a16207; font-weight: 600; background: #fef08a; padding: 4px 8px; border-radius: 4px;">Pending Approval</span></p>
+                                </div>
+                                <div class="download-section">
+                                    <p class="small-label">Your permit will be available for download once the status is "Approved".</p>
+                                    <button type="button" class="next-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Download Permit (PDF)</button>
+                                </div>
+
+                            <?php elseif ($vendor['status'] === 'approved'): ?>
+                                <div class="status-icon" style="color: #27ae60;">✅</div>
+                                <div class="Section-Title" style="text-align: center;">Registration Approved</div>
+                                <p class="status-text">
+                                    Congratulations! Your vendor registration has been approved. You can now download your digital permit.
+                                </p>
+                                <div class="info-box">
+                                    <input type="hidden" id="vendor-name" value="<?= htmlspecialchars($vendor['owner_name']) ?>">
+                                    <input type="hidden" id="product-category" value="<?= htmlspecialchars($vendor['business_type']) ?>">
+                                    <p><strong>Business Name:</strong> <?= htmlspecialchars($vendor['business_name']) ?></p>
+                                    <p><strong>Status:</strong> <span class="status-approved" style="color: #166534; font-weight: 600; background: #dcfce7; padding: 4px 8px; border-radius: 4px;">Approved</span></p>
+                                </div>
+                                <div class="download-section">
+                                    <button type="button" id="downloadPermitApproved" class="next-btn" style="background-color: #27ae60; cursor: pointer; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600;">Download Permit (PDF)</button>
+                                </div>
+                                
+                            <?php elseif ($vendor['status'] === 'rejected'): ?>
+                                <div class="status-icon" style="color: #dc2626;">❌</div>
+                                <div class="Section-Title" style="text-align: center;">Registration Rejected</div>
+                                <p class="status-text">
+                                    Unfortunately, your vendor registration has been rejected by the barangay officials.
+                                </p>
+                                <div class="info-box">
+                                    <p><strong>Status:</strong> <span class="status-rejected" style="color: #991b1b; font-weight: 600; background: #fee2e2; padding: 4px 8px; border-radius: 4px;">Rejected</span></p>
+                                </div>
+                                <div class="download-section">
+                                    <p class="small-label">Please contact the barangay hall for more details or submit a new application.</p>
+                                    <a href="../server/actions/delete_vendor_application.php?id=<?= $vendor['id'] ?>" class="back-btn" style="text-decoration: none; display: inline-block;">Submit a New Application</a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
         </div>
     
             </div>
@@ -386,7 +445,3 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
 
 </body>
 </html>
-
-
-
-

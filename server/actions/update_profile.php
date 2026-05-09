@@ -2,7 +2,7 @@
 require_once '../config/db.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
-    header('Location: ../index.html');
+    header('Location: ../../client/index.html');
     exit;
 }
 
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Update session full name
     $_SESSION['full_name'] = $full_name;
 
-    header('Location: ../user_settings.php?success=1');
+    header('Location: ../../client/user_settings.php?success=1');
     exit;
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php';
+require_once '../server/config/db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: index.html');
     exit;
@@ -156,7 +156,7 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                         <span style="font-size: 12px; color: var(--text-muted);">admin@servicio.gov</span>
                     </div>
                 </div>
-                <a href="actions/logout.php" class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <a href="../server/actions/logout.php" class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <i class="ph ph-sign-out"></i> Logout
                 </a>
             </div>
@@ -259,13 +259,13 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                     <td><?= htmlspecialchars($v['contact_number']) ?></td>
                                     <td>
                                         <div style="display: flex; gap: 8px;">
-                                            <form action="actions/admin_action.php" method="POST" style="margin:0;">
+                                            <form action="../server/actions/admin_action.php" method="POST" style="margin:0;">
                                                 <input type="hidden" name="action" value="approve_vendor">
                                                 <input type="hidden" name="vendor_id" value="<?= $v['id'] ?>">
                                                 <input type="hidden" name="user_id" value="<?= $v['user_id'] ?>">
                                                 <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;">Approve</button>
                                             </form>
-                                            <form action="actions/admin_action.php" method="POST" style="margin:0;">
+                                            <form action="../server/actions/admin_action.php" method="POST" style="margin:0;">
                                                 <input type="hidden" name="action" value="reject_vendor">
                                                 <input type="hidden" name="vendor_id" value="<?= $v['id'] ?>">
                                                 <input type="hidden" name="user_id" value="<?= $v['user_id'] ?>">
@@ -303,7 +303,7 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                     <td style="font-weight: 500;">
                                         <div style="display:flex; align-items:center; gap: 10px;">
                                             <?php if($p['profile_image'] !== 'default_avatar.png'): ?>
-                                                <img src="uploads/<?= htmlspecialchars($p['profile_image']) ?>" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                                                <img src="../server/uploads/<?= htmlspecialchars($p['profile_image']) ?>" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
                                             <?php endif; ?>
                                             <?= htmlspecialchars($p['full_name']) ?>
                                         </div>
@@ -313,12 +313,12 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                     <td><?= htmlspecialchars($p['blood_type'] ?? 'N/A') ?></td>
                                     <td>
                                         <div style="display: flex; gap: 8px;">
-                                            <form action="actions/admin_action.php" method="POST" style="margin:0;">
+                                            <form action="../server/actions/admin_action.php" method="POST" style="margin:0;">
                                                 <input type="hidden" name="action" value="approve_profile">
                                                 <input type="hidden" name="user_id" value="<?= $p['id'] ?>">
                                                 <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;">Approve</button>
                                             </form>
-                                            <form action="actions/admin_action.php" method="POST" style="margin:0;">
+                                            <form action="../server/actions/admin_action.php" method="POST" style="margin:0;">
                                                 <input type="hidden" name="action" value="reject_profile">
                                                 <input type="hidden" name="user_id" value="<?= $p['id'] ?>">
                                                 <button class="btn btn-outline" style="padding: 6px 12px; font-size: 13px; color: #dc2626; border-color: #dc2626;">Reject</button>
@@ -416,7 +416,7 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                         <?php endif; ?>
                                     </div>
                                     <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray); text-align: center;">
-                                        <form action="actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this health record? This action cannot be undone.');" style="margin: 0;">
+                                        <form action="../server/actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this health record? This action cannot be undone.');" style="margin: 0;">
                                             <input type="hidden" name="action" value="delete_health_record">
                                             <input type="hidden" name="record_id" value="<?= $r['id'] ?>">
                                             <button type="submit" class="btn btn-outline" style="padding: 8px 16px; font-size: 13px; color: #dc2626; border-color: #dc2626; width: 100%;"><i class="ph ph-trash"></i> Delete Record</button>
@@ -510,7 +510,7 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                         <?php endif; ?>
                                         <div class="data-row"><span class="data-label">Last Donation</span><span class="data-val"><?= !empty($d['last_donation']) ? date('M d, Y', strtotime($d['last_donation'])) : 'None recorded' ?></span></div>
                                         <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray); text-align: center;">
-                                            <form action="actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this donor record?');" style="margin: 0;">
+                                            <form action="../server/actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this donor record?');" style="margin: 0;">
                                                 <input type="hidden" name="action" value="delete_donor">
                                                 <input type="hidden" name="donor_id" value="<?= $d['id'] ?>">
                                                 <button type="submit" class="btn btn-outline" style="padding: 8px 16px; font-size: 13px; color: #dc2626; border-color: #dc2626; width: 100%;"><i class="ph ph-trash"></i> Delete Record</button>
@@ -564,7 +564,7 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                         <span class="data-val" style="text-align:left; max-width:100%;"><?= htmlspecialchars($v['address']) ?></span>
                                     </div>
                                     <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray); text-align: center;">
-                                        <form action="actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this vendor application?');" style="margin: 0;">
+                                        <form action="../server/actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this vendor application?');" style="margin: 0;">
                                             <input type="hidden" name="action" value="delete_vendor">
                                             <input type="hidden" name="vendor_id" value="<?= $v['id'] ?>">
                                             <button type="submit" class="btn btn-outline" style="padding: 8px 16px; font-size: 13px; color: #dc2626; border-color: #dc2626; width: 100%;"><i class="ph ph-trash"></i> Delete Record</button>

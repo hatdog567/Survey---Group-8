@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php';
+require_once '../server/config/db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
     header('Location: index.html');
     exit;
@@ -65,7 +65,7 @@ $notifications = $stmt->fetchAll();
             <a href="user_settings.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
                 <div class="avatar" style="overflow:hidden;">
                     <?php if($user['profile_image'] !== 'default_avatar.png' && !empty($user['profile_image'])): ?>
-                        <img src="uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="../server/uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
                     <?php else: ?>
                         <?= $initials ?>
                     <?php endif; ?>
@@ -187,7 +187,7 @@ $notifications = $stmt->fetchAll();
     <script>
         document.querySelector('.stat-card i.ph-bell').parentElement.parentElement.addEventListener('click', function() {
             if (<?= $unread_notifs ?> > 0) {
-                fetch('actions/mark_notifs_read.php', { method: 'POST' })
+                fetch('../server/actions/mark_notifs_read.php', { method: 'POST' })
                     .then(() => {
                         // Dynamically decrease unread badge to 0
                         document.querySelector('.stat-card i.ph-bell').parentElement.nextElementSibling.querySelector('h3').innerText = '0';

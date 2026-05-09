@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Fetch data from API
-    fetch('actions/api_reports.php')
+    fetch('../server/actions/api_reports.php')
         .then(response => response.json())
         .then(data => {
             if (data.error) {
