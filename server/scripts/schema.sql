@@ -51,7 +51,18 @@ CREATE TABLE IF NOT EXISTS vendors (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- NOTIFICATIONS TABLE
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    is_read TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- INSERT DEFAULT ACCOUNTS (Password is 'password123' hashed with BCRYPT)
 INSERT INTO users (email, password, full_name, role) VALUES 
-('admin@servicio.gov', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'System Admin', 'admin'),
-('user@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Juan Dela Cruz', 'user');
+('admin@servicio.gov', '$2y$10$uEVBYOz6ii0J3BD.07.M5eOJdyxZZ/FWhmVJjleJ5C4w0m1DMnz6q', 'System Admin', 'admin'),
+('user@gmail.com', '$2y$10$uEVBYOz6ii0J3BD.07.M5eOJdyxZZ/FWhmVJjleJ5C4w0m1DMnz6q', 'Juan Dela Cruz', 'user');
