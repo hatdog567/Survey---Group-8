@@ -327,15 +327,29 @@ function toggleSubmitBtn(checkbox) {
 }
 
 /* 5. PDF GENERATION */
-window.generatePermitPDF = async function() {
-    const btn = document.getElementById('downloadPermitApproved');
+window.generatePermitPDF = async function(event) {
+    let btn = null;
+    if (event && event.currentTarget) {
+        btn = event.currentTarget;
+    } else {
+        btn = document.getElementById('downloadPermitApproved');
+    }
+
     if (btn && btn.disabled) return;
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    const vendorName = document.getElementById('vendor-name')?.value || "FRIEZA BATUNGBAKAL";
-    const productType = document.getElementById('product-category')?.value || "STREET FOOD VENDOR";
+    let vendorName = "FRIEZA BATUNGBAKAL";
+    let productType = "STREET FOOD VENDOR";
+
+    if (btn && btn.dataset.owner) {
+        vendorName = btn.dataset.owner;
+        productType = btn.dataset.type;
+    } else {
+        vendorName = document.getElementById('vendor-name')?.value || "FRIEZA BATUNGBAKAL";
+        productType = document.getElementById('product-category')?.value || "STREET FOOD VENDOR";
+    }
     const year = 2026;
 
     const getImageData = (url) => {
@@ -455,10 +469,10 @@ window.generatePermitPDF = async function() {
 };
 
 document.addEventListener("DOMContentLoaded", function() {
-    const downloadBtn = document.getElementById('downloadPermitApproved');
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', window.generatePermitPDF);
-    }
+    const downloadBtns = document.querySelectorAll('.download-permit-btn, #downloadPermitApproved');
+    downloadBtns.forEach(btn => {
+        btn.addEventListener('click', window.generatePermitPDF);
+    });
 });
 
 // Add validation before form submission

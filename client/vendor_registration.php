@@ -18,10 +18,12 @@ foreach ($words as $w) {
 }
 if(strlen($initials)>2) $initials = substr($initials,0,2);
 
-// Check if user has an existing vendor application
-$stmt = $pdo->prepare("SELECT * FROM vendors WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+// Fetch all vendor applications for the user
+$stmt = $pdo->prepare("SELECT * FROM vendors WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$user_id]);
-$vendor = $stmt->fetch();
+$vendors = $stmt->fetchAll();
+
+$show_form = isset($_GET['new']) || empty($vendors);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,6 +89,9 @@ $vendor = $stmt->fetch();
     <main style="padding: 40px; background: var(--gray-light); min-height: calc(100vh - 70px);">
         <div class="main-content">
             <div class="Container">
+            <div id="toast-container" style="display: none;">Please select at least one Product Type</div>
+            
+            <?php if ($show_form): ?>
             <header>
                 <h1>Vendors' E-Registration Form</h1>
                 <p>Complete this form to apply for a permit to sell within the barangay area</p>
@@ -100,10 +105,7 @@ $vendor = $stmt->fetch();
                 <div class="step" id="p-5">5. Approval</div>
                 <div class="step" id="p-6">6. Certification</div>
             </div>
-
-            <div id="toast-container" style="display: none;">Please select at least one Product Type</div>
             <form id="registrationForm">
-                <?php if (!$vendor): ?>
                 <!-- Step 1: Business Details -->
                 <div class="step-container active" id="step-1">
                     <div class="Section-Title">1. Vendor's Detail</div>
@@ -384,10 +386,22 @@ $vendor = $stmt->fetch();
                     </div>
                 </div>
             </form>
-                <?php else: ?>
-                    <!-- Post-Submission Status Views -->
-                    <div class="step-container active" id="step-6">
-                        <div class="status-card" style="margin-top: 20px;">
+            <?php else: ?>
+                <!-- Post-Submission Status Views -->
+                <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; text-align: left; padding-bottom: 20px; border-bottom: 1px solid var(--gray);">
+                    <div style="flex-grow: 1;">
+                        <h1 style="margin-bottom: 8px; font-size: 28px; color: var(--text-dark);">Your Permit Applications</h1>
+                        <p style="color: var(--text-muted); margin: 0;">Manage your vendor permits and apply for new ones</p>
+                    </div>
+                    <a href="?new=1" class="next-btn" style="text-decoration: none; padding: 12px 24px; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; flex-shrink: 0;">
+                        <i class="ph ph-plus" style="font-size: 20px;"></i> Apply for New Permit
+                    </a>
+                </header>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+                <?php foreach ($vendors as $vendor): ?>
+                    <div class="step-container active" style="margin: 0;">
+                        <div class="status-card" style="margin-top: 0; height: 100%; display: flex; flex-direction: column;">
                             <?php if ($vendor['status'] === 'pending'): ?>
                                 <div class="status-icon" id="status-icon">⏳</div>
                                 <div class="Section-Title" style="text-align: center;">Registration Under Review</div>
@@ -411,13 +425,11 @@ $vendor = $stmt->fetch();
                                     Congratulations! Your vendor registration has been approved. You can now download your digital permit.
                                 </p>
                                 <div class="info-box">
-                                    <input type="hidden" id="vendor-name" value="<?= htmlspecialchars($vendor['owner_name']) ?>">
-                                    <input type="hidden" id="product-category" value="<?= htmlspecialchars($vendor['business_type']) ?>">
                                     <p><strong>Business Name:</strong> <?= htmlspecialchars($vendor['business_name']) ?></p>
                                     <p><strong>Status:</strong> <span class="status-approved" style="color: #166534; font-weight: 600; background: #dcfce7; padding: 4px 8px; border-radius: 4px;">Approved</span></p>
                                 </div>
-                                <div class="download-section">
-                                    <button type="button" id="downloadPermitApproved" class="next-btn" style="background-color: #27ae60; cursor: pointer; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600;">Download Permit (PDF)</button>
+                                <div class="download-section" style="margin-top: auto;">
+                                    <button type="button" class="next-btn download-permit-btn" data-business="<?= htmlspecialchars($vendor['business_name']) ?>" data-owner="<?= htmlspecialchars($vendor['owner_name']) ?>" data-type="<?= htmlspecialchars($vendor['business_type']) ?>" style="background-color: #27ae60; cursor: pointer; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; width: 100%;">Download Permit (PDF)</button>
                                 </div>
                                 
                             <?php elseif ($vendor['status'] === 'rejected'): ?>
@@ -436,7 +448,9 @@ $vendor = $stmt->fetch();
                             <?php endif; ?>
                         </div>
                     </div>
-                <?php endif; ?>
+                <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
     
             </div>
