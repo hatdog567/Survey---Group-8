@@ -253,6 +253,13 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('contact_number', document.getElementById('contact-number').value);
             formData.append('address', document.getElementById('home-address').value);
             
+            const idFront = document.getElementById('valid-id-front').files[0];
+            const idBack = document.getElementById('valid-id-back').files[0];
+            const brgyClr = document.getElementById('brgy-clr').files[0];
+            if (idFront) formData.append('valid_id_front', idFront);
+            if (idBack) formData.append('valid_id_back', idBack);
+            if (brgyClr) formData.append('barangay_clearance', brgyClr);
+            
             // Add validation before form submission
             if (!validateVendorForm()) {
                 return;

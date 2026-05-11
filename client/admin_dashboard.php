@@ -248,6 +248,7 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                 <th>Owner</th>
                                 <th>Type</th>
                                 <th>Contact</th>
+                                <th>Attachments</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -261,6 +262,22 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                     <td><?= htmlspecialchars($v['owner_name']) ?></td>
                                     <td><span style="text-transform: capitalize;"><?= htmlspecialchars($v['business_type']) ?></span></td>
                                     <td><?= htmlspecialchars($v['contact_number']) ?></td>
+                                    <td>
+                                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                                            <?php if(!empty($v['id_front'])): ?>
+                                                <a href="../server/uploads/<?= htmlspecialchars($v['id_front']) ?>" target="_blank" style="font-size:12px; background:#e2e8f0; padding:2px 6px; border-radius:4px; text-decoration:none; color:#334155;">ID (Front)</a>
+                                            <?php endif; ?>
+                                            <?php if(!empty($v['id_back'])): ?>
+                                                <a href="../server/uploads/<?= htmlspecialchars($v['id_back']) ?>" target="_blank" style="font-size:12px; background:#e2e8f0; padding:2px 6px; border-radius:4px; text-decoration:none; color:#334155;">ID (Back)</a>
+                                            <?php endif; ?>
+                                            <?php if(!empty($v['brgy_clearance'])): ?>
+                                                <a href="../server/uploads/<?= htmlspecialchars($v['brgy_clearance']) ?>" target="_blank" style="font-size:12px; background:#e2e8f0; padding:2px 6px; border-radius:4px; text-decoration:none; color:#334155;">Clearance</a>
+                                            <?php endif; ?>
+                                            <?php if(empty($v['id_front']) && empty($v['id_back']) && empty($v['brgy_clearance'])): ?>
+                                                <span style="font-size:12px; color:#94a3b8;">None</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
                                     <td>
                                         <div style="display: flex; gap: 8px;">
                                             <form action="../server/actions/admin_action.php" method="POST" style="margin:0;">
