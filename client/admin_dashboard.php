@@ -38,9 +38,13 @@ foreach($allMembers as $m) {
 
 // Fetch Donors for Cards
 $donors = $pdo->query("
-    SELECT donors.*, health_records.zone as h_zone, health_records.address as h_address
+    SELECT donors.*, hr.zone as h_zone, hr.address as h_address
     FROM donors 
-    LEFT JOIN health_records ON donors.user_id = health_records.user_id 
+    LEFT JOIN (
+        SELECT user_id, zone, address 
+        FROM health_records 
+        WHERE id IN (SELECT MAX(id) FROM health_records GROUP BY user_id)
+    ) hr ON donors.user_id = hr.user_id 
     ORDER BY donors.created_at DESC
 ")->fetchAll();
 
