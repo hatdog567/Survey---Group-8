@@ -17,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
+            // Prevent session fixation
+            session_regenerate_id(true);
+
             // Password is correct
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
@@ -32,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../../client/index.html?error=invalid_credentials');
             exit;
         }
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         header('Location: ../../client/index.html?error=db_error');
         exit;
     }
@@ -41,5 +44,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
-
-

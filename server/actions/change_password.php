@@ -1,6 +1,5 @@
 <?php
 require_once '../config/db.php';
-session_start();
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../../client/index.html');
@@ -24,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $new_password)) {
+    if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $new_password)) {
         header('Location: ../../client/user_settings.php?pwd_error=' . urlencode('Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.'));
         exit;
     }

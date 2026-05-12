@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $contact_number = trim($_POST['contact_number']);
     $blood_type = trim($_POST['blood_type']);
-    
+
     // Fetch current user data to get existing image
     $stmt = $pdo->prepare("SELECT profile_image FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
@@ -22,16 +22,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle File Upload
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = '../uploads/';
-        $file_extension = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
-        // Securely name the file with unique ID
-        $new_filename = uniqid('profile_') . '.' . $file_extension;
-        $target_file = $upload_dir . $new_filename;
-        
-        // Simple image validation
-        $check = getimagesize($_FILES['profile_image']['tmp_name']);
-        if($check !== false) {
-            if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_file)) {
-                $profile_image = $new_filename;
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+        $file_name = $_FILES['profile_image']['name'];
+        $file_tmp_path = $_FILES['profile_image']['tmp_name'];
+
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $allowed_mime_types = ['image/jpeg', 'image/png', 'image/gif'];
+
+        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+        // Check extension
+        if (in_array($file_extension, $allowed_extensions)) {
+            // Check MIME type
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime_type = $finfo->file($file_tmp_path);
+
+            if (in_array($mime_type, $allowed_mime_types)) {
+                // Securely name the file with unique ID
+                $new_filename = uniqid('profile_') . '_' . bin2hex(random_bytes(4)) . '.' . $file_extension;
+                $target_file = $upload_dir . $new_filename;
+
+                if (move_uploaded_file($file_tmp_path, $target_file)) {
+                    $profile_image = $new_filename;
+                }
             }
         }
     }
@@ -42,13 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SET full_name = ?, email = ?, contact_number = ?, blood_type = ?, profile_image = ?, profile_status = 'pending_review'
         WHERE id = ?
     ");
-    
+
     $updateStmt->execute([
-        $full_name, 
-        $email, 
-        $contact_number, 
-        $blood_type, 
-        $profile_image, 
+        $full_name,
+        $email,
+        $contact_number,
+        $blood_type,
+        $profile_image,
         $user_id
     ]);
 

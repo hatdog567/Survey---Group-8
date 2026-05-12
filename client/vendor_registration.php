@@ -124,7 +124,17 @@ $show_form = isset($_GET['new']) || empty($vendors);
                     <div class="Form-grid">
                         <div class="Field-group">
                             <label>Contact Number</label>
-                            <input type="text" id="contact-number" placeholder="09123456789" required>
+                            <div style="display: flex; gap: 8px;">
+                                <select id="country-code" style="width: 120px; padding: 12px; border: 1px solid var(--gray); border-radius: 8px;">
+                                    <option value="+63">🇵🇭 +63</option>
+                                    <option value="+1">🇺🇸 +1</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+61">🇦🇺 +61</option>
+                                    <option value="+81">🇯🇵 +81</option>
+                                    <option value="+86">🇨🇳 +86</option>
+                                </select>
+                                <input type="text" id="contact-number" placeholder="912 345 6789" style="flex: 1;" required>
+                            </div>
                         </div>
                         <div class="Field-group">
                             <label>Home Address</label>

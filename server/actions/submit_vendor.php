@@ -20,33 +20,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $brgy_clearance = '';
 
     $upload_dir = '../uploads/';
-    if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+    if (!is_dir($upload_dir))
+        mkdir($upload_dir, 0777, true);
 
-    if (isset($_FILES['valid_id_front']) && $_FILES['valid_id_front']['error'] == 0) {
-        $id_front = time() . '_f_' . basename($_FILES['valid_id_front']['name']);
-        move_uploaded_file($_FILES['valid_id_front']['tmp_name'], $upload_dir . $id_front);
+    $allowed_extensions = ['jpg', 'jpeg', 'png', 'pdf'];
+    $allowed_mime_types = ['image/jpeg', 'image/png', 'application/pdf'];
+
+    function secure_upload($file_input_name, $prefix, $upload_dir, $allowed_extensions, $allowed_mime_types)
+    {
+        if (isset($_FILES[$file_input_name]) && $_FILES[$file_input_name]['error'] == 0) {
+            $file_tmp_path = $_FILES[$file_input_name]['tmp_name'];
+            $file_name = $_FILES[$file_input_name]['name'];
+            $file_size = $_FILES[$file_input_name]['size'];
+
+            // Check file extension
+            $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            if (!in_array($file_extension, $allowed_extensions)) {
+                return false; // Invalid extension
+            }
+
+            // Check MIME type
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime_type = $finfo->file($file_tmp_path);
+
+            if (!in_array($mime_type, $allowed_mime_types)) {
+                return false; // Invalid MIME type
+            }
+
+            // Generate secure filename
+            $new_file_name = time() . '_' . $prefix . '_' . bin2hex(random_bytes(8)) . '.' . $file_extension;
+            move_uploaded_file($file_tmp_path, $upload_dir . $new_file_name);
+            return $new_file_name;
+        }
+        return '';
     }
-    if (isset($_FILES['valid_id_back']) && $_FILES['valid_id_back']['error'] == 0) {
-        $id_back = time() . '_b_' . basename($_FILES['valid_id_back']['name']);
-        move_uploaded_file($_FILES['valid_id_back']['tmp_name'], $upload_dir . $id_back);
-    }
-    if (isset($_FILES['barangay_clearance']) && $_FILES['barangay_clearance']['error'] == 0) {
-        $brgy_clearance = time() . '_c_' . basename($_FILES['barangay_clearance']['name']);
-        move_uploaded_file($_FILES['barangay_clearance']['tmp_name'], $upload_dir . $brgy_clearance);
-    }
+
+    $id_front = secure_upload('valid_id_front', 'f', $upload_dir, $allowed_extensions, $allowed_mime_types);
+    $id_back = secure_upload('valid_id_back', 'b', $upload_dir, $allowed_extensions, $allowed_mime_types);
+    $brgy_clearance = secure_upload('barangay_clearance', 'c', $upload_dir, $allowed_extensions, $allowed_mime_types);
+
 
     try {
         // Insert vendor data with a pending status and file paths
         $stmt = $pdo->prepare("INSERT INTO vendors (user_id, business_name, owner_name, business_type, contact_number, address, status, id_front, id_back, brgy_clearance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$user_id, $business_name, $owner_name, $business_type, $contact_number, $address, 'pending', $id_front, $id_back, $brgy_clearance]);
-        
+
         // Return JSON for AJAX response
         echo json_encode(['success' => true]);
         exit;
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
         exit;
     }
 }
 ?>
-

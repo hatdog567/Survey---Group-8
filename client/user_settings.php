@@ -78,8 +78,8 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
             <!-- Sidebar -->
             <div class="settings-sidebar">
                 <nav class="settings-nav">
-                    <a href="javascript:void(0)" class="active" onclick="switchTab('profile', this)"><i class="ph ph-user"></i> My Profile</a>
-                    <a href="javascript:void(0)" onclick="switchTab('security', this)"><i class="ph ph-lock-key"></i> Security</a>
+                    <a href="javascript:void(0)" class="<?= (!isset($_GET['pwd_success']) && !isset($_GET['pwd_error'])) ? 'active' : '' ?>" onclick="switchTab('profile', this)"><i class="ph ph-user"></i> My Profile</a>
+                    <a href="javascript:void(0)" class="<?= (isset($_GET['pwd_success']) || isset($_GET['pwd_error'])) ? 'active' : '' ?>" onclick="switchTab('security', this)"><i class="ph ph-lock-key"></i> Security</a>
                     <a href="javascript:void(0)" onclick="switchTab('faq', this)"><i class="ph ph-question"></i> FAQ</a>
                     <a href="javascript:void(0)" onclick="switchTab('privacy', this)"><i class="ph ph-shield-check"></i> Privacy Policy</a>
                 </nav>
@@ -89,7 +89,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
             <div class="settings-content">
                 
                 <!-- PROFILE TAB -->
-                <div id="profile" class="tab-pane active">
+                <div id="profile" class="tab-pane <?= (!isset($_GET['pwd_success']) && !isset($_GET['pwd_error'])) ? 'active' : '' ?>">
                     <h2 style="margin-bottom: 24px;">Personal Information</h2>
                     <?php if(($user['profile_status'] ?? 'approved') === 'pending_review'): ?>
                         <div style="background: #fef08a; color: #854d0e; padding: 12px; border-radius: 8px; margin-bottom: 24px; font-size: 14px;">
@@ -148,7 +148,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                 </div>
 
                 <!-- SECURITY TAB -->
-                <div id="security" class="tab-pane">
+                <div id="security" class="tab-pane <?= (isset($_GET['pwd_success']) || isset($_GET['pwd_error'])) ? 'active' : '' ?>">
                     <h2 style="margin-bottom: 24px;">Security & Password</h2>
                     <?php if(isset($_GET['pwd_success'])): ?>
                         <div style="background: #dcfce7; color: #166534; padding: 12px; border-radius: 8px; margin-bottom: 24px; font-size: 14px;">
@@ -162,18 +162,21 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
 
                     <form action="../server/actions/change_password.php" method="POST">
                         <div style="display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 400px;">
-                            <div class="form-group">
+                            <div class="form-group" style="position: relative;">
                                 <label>Current Password</label>
-                                <input type="password" name="current_password" required>
+                                <input type="password" name="current_password" required style="padding-right: 40px; width: 100%; box-sizing: border-box;">
+                                <i class="ph ph-eye" onclick="togglePassword(this)" style="position: absolute; right: 12px; top: 38px; cursor: pointer; font-size: 20px; color: var(--text-muted);"></i>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="position: relative;">
                                 <label>New Password</label>
-                                <input type="password" name="new_password" required>
+                                <input type="password" name="new_password" required style="padding-right: 40px; width: 100%; box-sizing: border-box;">
+                                <i class="ph ph-eye" onclick="togglePassword(this)" style="position: absolute; right: 12px; top: 38px; cursor: pointer; font-size: 20px; color: var(--text-muted);"></i>
                                 <small style="color: var(--text-muted); display: block; margin-top: 4px;">Must be at least 8 chars, 1 uppercase, 1 number, 1 special character.</small>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="position: relative;">
                                 <label>Confirm New Password</label>
-                                <input type="password" name="confirm_password" required>
+                                <input type="password" name="confirm_password" required style="padding-right: 40px; width: 100%; box-sizing: border-box;">
+                                <i class="ph ph-eye" onclick="togglePassword(this)" style="position: absolute; right: 12px; top: 38px; cursor: pointer; font-size: 20px; color: var(--text-muted);"></i>
                             </div>
                         </div>
 
@@ -214,6 +217,19 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
             
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
+        }
+
+        function togglePassword(icon) {
+            const input = icon.previousElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('ph-eye');
+                icon.classList.add('ph-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('ph-eye-slash');
+                icon.classList.add('ph-eye');
+            }
         }
     </script>
 </body>

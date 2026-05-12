@@ -530,8 +530,22 @@ $approvedVendorsList = $pdo->query("SELECT * FROM vendors WHERE status = 'approv
                                             <div class="data-row"><span class="data-label">Address</span><span class="data-val"><?= htmlspecialchars($d['h_address']) ?></span></div>
                                         <?php endif; ?>
                                         <div class="data-row"><span class="data-label">Last Donation</span><span class="data-val"><?= !empty($d['last_donation']) ? date('M d, Y', strtotime($d['last_donation'])) : 'None recorded' ?></span></div>
-                                        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray); text-align: center;">
-                                            <form action="../server/actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this donor record?');" style="margin: 0;">
+                                        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray); display: flex; flex-direction: column; gap: 8px;">
+                                            <div style="display: flex; gap: 8px;">
+                                                <form action="../server/actions/admin_action.php" method="POST" style="flex: 1; margin: 0;">
+                                                    <input type="hidden" name="action" value="update_donor_status">
+                                                    <input type="hidden" name="donor_id" value="<?= $d['id'] ?>">
+                                                    <input type="hidden" name="status" value="eligible">
+                                                    <button type="submit" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px; width: 100%; background: #166534; border-color: #166534;">Set Eligible</button>
+                                                </form>
+                                                <form action="../server/actions/admin_action.php" method="POST" style="flex: 1; margin: 0;">
+                                                    <input type="hidden" name="action" value="update_donor_status">
+                                                    <input type="hidden" name="donor_id" value="<?= $d['id'] ?>">
+                                                    <input type="hidden" name="status" value="not_eligible">
+                                                    <button type="submit" class="btn btn-outline" style="padding: 8px 16px; font-size: 13px; width: 100%; color: #991b1b; border-color: #991b1b;">Set Not Eligible</button>
+                                                </form>
+                                            </div>
+                                            <form action="../server/actions/admin_action.php" method="POST" onsubmit="return confirm('Delete this donor record?');" style="margin: 0; margin-top: 8px;">
                                                 <input type="hidden" name="action" value="delete_donor">
                                                 <input type="hidden" name="donor_id" value="<?= $d['id'] ?>">
                                                 <button type="submit" class="btn btn-outline" style="padding: 8px 16px; font-size: 13px; color: #dc2626; border-color: #dc2626; width: 100%;"><i class="ph ph-trash"></i> Delete Record</button>

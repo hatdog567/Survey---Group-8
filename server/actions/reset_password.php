@@ -19,11 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user) {
             // Hash the new password
             $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
-            
+
             // Update the password in the database
             $updateStmt = $pdo->prepare("UPDATE users SET password = ? WHERE email = ?");
             $updateStmt->execute([$hashed_password, $email]);
-            
+
             // Redirect with success message
             header('Location: ../../client/index.html?success=password_updated');
             exit;
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../../client/index.html?error=email_not_found');
             exit;
         }
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         header('Location: ../../client/index.html?error=db_error');
         exit;
     }

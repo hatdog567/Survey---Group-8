@@ -179,7 +179,7 @@ window.nextStep = function(stepNumber) {
 /* 3. INITIALIZATION & EVENT LISTENERS */
 document.addEventListener("DOMContentLoaded", function () {
     // Step 1: Category Toggles
-    const categorySelect = document.querySelector('select');
+    const categorySelect = document.getElementById('product-category');
     const foodSection = document.getElementById("food-section");
     const nonFoodSection = document.getElementById("non-food-section");
 
@@ -250,7 +250,10 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('business_name', document.getElementById('business-name').value);
             formData.append('owner_name', document.getElementById('vendor-name').value);
             formData.append('business_type', document.getElementById('product-category').value);
-            formData.append('contact_number', document.getElementById('contact-number').value);
+            const countryCode = document.getElementById('country-code') ? document.getElementById('country-code').value : '';
+            const contactInput = document.getElementById('contact-number').value.trim();
+            const fullContact = countryCode ? (countryCode + ' ' + contactInput) : contactInput;
+            formData.append('contact_number', fullContact);
             formData.append('address', document.getElementById('home-address').value);
             
             const idFront = document.getElementById('valid-id-front').files[0];
@@ -495,8 +498,9 @@ function validateVendorForm() {
         return false;
     }
 
-    if (!/^\d{10,11}$/.test(contactNumber)) {
-        showToast('Invalid contact number. Please enter a valid 10-11 digit number.');
+    const cleanedNumber = contactNumber.replace(/\D/g, '');
+    if (cleanedNumber.length < 9 || cleanedNumber.length > 15) {
+        showToast('Invalid contact number. Please enter a valid phone number.');
         return false;
     }
 
