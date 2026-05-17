@@ -14,12 +14,15 @@ $full_name = $user['full_name'];
 $words = explode(' ', $full_name);
 $initials = '';
 foreach ($words as $w) {
-    if(!empty($w)) $initials .= strtoupper($w[0]);
+    if (!empty($w))
+        $initials .= strtoupper($w[0]);
 }
-if(strlen($initials)>2) $initials = substr($initials,0,2);
+if (strlen($initials) > 2)
+    $initials = substr($initials, 0, 2);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,10 +31,25 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="assets/css/dashboard.css">
     <style>
-        .member-card { background: var(--gray-light); padding: 20px; border-radius: 8px; margin-bottom: 24px; border: 1px solid var(--gray); }
-        .member-card h4 { margin-bottom: 16px; color: var(--green-dark); display: flex; align-items: center; gap: 8px; font-size: 16px; }
+        .member-card {
+            background: var(--gray-light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border: 1px solid var(--gray);
+        }
+
+        .member-card h4 {
+            margin-bottom: 16px;
+            color: var(--green-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
     </style>
 </head>
+
 <body>
 
     <header class="top-nav">
@@ -44,23 +62,27 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
             <a href="vendor_registration.php">Vendor Registration</a>
         </nav>
         <div class="user-profile">
-            <a href="user_settings.php" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
+            <a href="user_settings.php"
+                style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;">
                 <div class="avatar" style="overflow:hidden;">
-                    <?php if($user['profile_image'] !== 'default_avatar.png' && !empty($user['profile_image'])): ?>
-                        <img src="../server/uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+                    <?php if ($user['profile_image'] !== 'default_avatar.png' && !empty($user['profile_image'])): ?>
+                        <img src="../server/uploads/<?= htmlspecialchars($user['profile_image']) ?>" alt="Avatar"
+                            style="width:100%; height:100%; object-fit:cover;">
                     <?php else: ?>
                         <?= $initials ?>
                     <?php endif; ?>
                 </div>
                 <span style="font-weight: 500;"><?= htmlspecialchars($full_name) ?></span>
             </a>
-            <a href="user_settings.php" style="margin-left: 16px; color: var(--text-muted); text-decoration: none;" title="Account Settings"><i class="ph ph-gear"></i> Settings</a>
-            <a href="index.html" style="margin-left: 16px; color: var(--text-muted); text-decoration: none;"><i class="ph ph-sign-out"></i> Logout</a>
+            <a href="user_settings.php" style="margin-left: 16px; color: var(--text-muted); text-decoration: none;"
+                title="Account Settings"><i class="ph ph-gear"></i> Settings</a>
+            <a href="index.html" style="margin-left: 16px; color: var(--text-muted); text-decoration: none;"><i
+                    class="ph ph-sign-out"></i> Logout</a>
         </div>
     </header>
 
     <main style="padding: 40px; background: var(--gray-light); min-height: calc(100vh - 70px);">
-        
+
         <div class="form-container">
             <div class="page-header" style="text-align: center;">
                 <h1>Family Health Survey</h1>
@@ -69,21 +91,30 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
 
             <!-- STEPPER UI -->
             <div class="stepper">
-                <div class="step active"><div class="step-circle">1</div><span class="step-label">Household</span></div>
-                <div class="step"><div class="step-circle">2</div><span class="step-label">Members</span></div>
-                <div class="step"><div class="step-circle">3</div><span class="step-label">Screening</span></div>
-                <div class="step"><div class="step-circle">4</div><span class="step-label">Blood Donor</span></div>
+                <div class="step active">
+                    <div class="step-circle">1</div><span class="step-label">Household</span>
+                </div>
+                <div class="step">
+                    <div class="step-circle">2</div><span class="step-label">Members</span>
+                </div>
+                <div class="step">
+                    <div class="step-circle">3</div><span class="step-label">Screening</span>
+                </div>
+                <div class="step">
+                    <div class="step-circle">4</div><span class="step-label">Blood Donor</span>
+                </div>
             </div>
 
             <!-- FORM CONTENT -->
             <form id="healthForm" action="../server/actions/submit_health.php" method="POST">
-                
+
                 <!-- STEP 1 -->
                 <div id="step1">
                     <h3 style="margin-bottom: 24px; font-size: 20px;">1. Household Information</h3>
                     <div class="form-group">
                         <label>Head of Family</label>
-                        <input type="text" id="head_name" name="head_of_family" placeholder="Full Name" value="<?= htmlspecialchars($full_name) ?>" required>
+                        <input type="text" id="head_name" name="head_of_family" placeholder="Full Name"
+                            value="<?= htmlspecialchars($full_name) ?>" required>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
                         <div class="form-group">
@@ -117,8 +148,28 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
                         <div class="form-group">
                             <label>Contact Number</label>
+                            <div style="display: flex; gap: 8px;">
+                                <select id="country-code" name="head_country_code"
+                                    style="width: 120px; padding: 12px; border: 1px solid var(--gray); border-radius: 8px;">
+                                    <option value="+63">🇵🇭 +63</option>
+                                    <option value="+1">🇺🇸 +1</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+61">🇦🇺 +61</option>
+                                    <option value="+81">🇯🇵 +81</option>
+                                    <option value="+86">🇨🇳 +86</option>
+                                </select>
+                                <input type="text" id="contact-number" name="head_contact" placeholder="912 345 6789" style="flex: 1;"
+                                    required>
+                            </div>
+                        </div>
+
+                        <!-- 
+                        <div class="form-group">
+                            <label>Contact Number</label>
                             <input type="text" name="contact_number" placeholder="09xxxxxxxxx" required>
                         </div>
+                        -->
+
                         <div class="form-group">
                             <label>Additional Members</label>
                             <input type="number" id="num_members" name="num_members" value="0" min="0" required>
@@ -141,8 +192,10 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                         <textarea name="address" rows="3" placeholder="Street, House No." required></textarea>
                     </div>
                     <div class="form-actions">
-                        <button type="button" class="btn btn-outline" onclick="window.location.href='user_dashboard.php'">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next <i class="ph ph-arrow-right"></i></button>
+                        <button type="button" class="btn btn-outline"
+                            onclick="window.location.href='user_dashboard.php'">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next <i
+                                class="ph ph-arrow-right"></i></button>
                     </div>
                 </div>
 
@@ -152,31 +205,36 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                     <div id="membersContainer"></div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline" onclick="goToStep(1)">Back</button>
-                        <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next <i class="ph ph-arrow-right"></i></button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next <i
+                                class="ph ph-arrow-right"></i></button>
                     </div>
                 </div>
 
                 <!-- STEP 3 -->
                 <div id="step3" style="display: none;">
                     <h3 style="margin-bottom: 24px; font-size: 20px;">3. Individual Health Screening</h3>
-                    <p style="margin-bottom: 20px; color: var(--text-muted);">Please answer the following for each member of the household.</p>
+                    <p style="margin-bottom: 20px; color: var(--text-muted);">Please answer the following for each
+                        member of the household.</p>
                     <div id="screeningContainer"></div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline" onclick="goToStep(2)">Back</button>
-                        <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next <i class="ph ph-arrow-right"></i></button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next <i
+                                class="ph ph-arrow-right"></i></button>
                     </div>
                 </div>
 
                 <!-- STEP 4 -->
                 <div id="step4" style="display: none;">
                     <h3 style="margin-bottom: 24px; font-size: 20px;">4. Voluntary Blood Donation</h3>
-                    <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 24px; color: #0284c7; border: 1px solid #bae6fd;">
+                    <div
+                        style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 24px; color: #0284c7; border: 1px solid #bae6fd;">
                         <i class="ph ph-drop" style="font-size: 24px; margin-bottom: 10px;"></i>
                         <p style="font-weight: 500;">Emergency Donor Directory</p>
-                        <p style="font-size: 14px; margin-top: 5px;">Indicate which family members agree to be contacted for emergency blood donation.</p>
+                        <p style="font-size: 14px; margin-top: 5px;">Indicate which family members agree to be contacted
+                            for emergency blood donation.</p>
                     </div>
                     <div id="donorContainer"></div>
-                    
+
                     <div class="form-actions" style="margin-top: 40px;">
                         <button type="button" class="btn btn-outline" onclick="goToStep(3)">Back</button>
                         <button type="submit" class="btn btn-primary">Save Complete Profile</button>
@@ -210,27 +268,27 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
 
         function goToStep(targetStep) {
             // Hide all steps
-            for(let i=1; i<=4; i++) {
+            for (let i = 1; i <= 4; i++) {
                 const el = document.getElementById('step' + i);
                 if (el) el.style.display = 'none';
             }
-            
+
             const num = parseInt(document.getElementById('num_members').value) || 0;
             const headName = document.getElementById('head_name').value || 'Head of Family';
-            
+
             // Collect member names dynamically for later steps
-            let members = [{name: headName, isHead: true}];
-            
+            let members = [{ name: headName, isHead: true }];
+
             if (targetStep >= 2) {
                 const container = document.getElementById('membersContainer');
-                if(targetStep === 2) {
-                    if(num === 0) {
+                if (targetStep === 2) {
+                    if (num === 0) {
                         container.innerHTML = '<p style="color:var(--text-muted); font-style:italic;">No additional members specified. Click Next.</p>';
                     } else {
                         // Only generate if empty or count changed (simplified for prototype)
-                        if(container.children.length !== num) {
+                        if (container.children.length !== num) {
                             container.innerHTML = '';
-                            for (let i=1; i<=num; i++) {
+                            for (let i = 1; i <= num; i++) {
                                 container.innerHTML += `
                                     <div class="member-card">
                                         <h4>Member ${i}</h4>
@@ -282,12 +340,12 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                         }
                     }
                 }
-                
+
                 // Fetch current values
                 const nameInputs = document.querySelectorAll('.mem-name-input');
                 nameInputs.forEach(input => {
-                    if(input.value) members.push({name: input.value, isHead: false});
-                    else members.push({name: 'Unnamed Member', isHead: false});
+                    if (input.value) members.push({ name: input.value, isHead: false });
+                    else members.push({ name: 'Unnamed Member', isHead: false });
                 });
             }
 
@@ -413,4 +471,5 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
         }
     </script>
 </body>
+
 </html>

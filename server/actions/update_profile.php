@@ -8,10 +8,21 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
-    $full_name = trim($_POST['full_name']);
-    $email = trim($_POST['email']);
-    $contact_number = trim($_POST['contact_number']);
-    $blood_type = trim($_POST['blood_type']);
+    $full_name = trim($_POST['full_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $contact_number = trim($_POST['contact_number'] ?? '');
+    $blood_type = trim($_POST['blood_type'] ?? '');
+
+    // Server-side validation
+    if (empty($full_name) || empty($email)) {
+        header('Location: ../../client/user_settings.php?error=' . urlencode('Name and Email cannot be empty.'));
+        exit;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        header('Location: ../../client/user_settings.php?error=' . urlencode('Invalid email format.'));
+        exit;
+    }
 
     // Fetch current user data to get existing image
     $stmt = $pdo->prepare("SELECT profile_image FROM users WHERE id = ?");

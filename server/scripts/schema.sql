@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS family_members (
     gender VARCHAR(20) NOT NULL,
     blood_type VARCHAR(10) NOT NULL,
     relationship VARCHAR(50) NOT NULL,
+    contact_number VARCHAR(20) DEFAULT NULL,
     existing_condition VARCHAR(10) DEFAULT 'No',
     condition_details VARCHAR(255) DEFAULT NULL,
     taking_medication VARCHAR(10) DEFAULT 'No',

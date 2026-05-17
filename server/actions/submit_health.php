@@ -8,16 +8,22 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
-    $head_of_family = $_POST['head_of_family'] ?? '';
+    $head_of_family = trim($_POST['head_of_family'] ?? '');
     $household_number = ($_POST['num_members'] ?? 0) + 1; // total members
-    $zone = $_POST['zone'] ?? '';
-    $address = $_POST['address'] ?? '';
+    $zone = trim($_POST['zone'] ?? '');
+    $address = trim($_POST['address'] ?? '');
+
+    if (empty($head_of_family) || empty($zone) || empty($address)) {
+        die("Error: Head of family, zone, and address are required.");
+    }
     
     // Head specific from step 1
     $head_age = $_POST['head_age'] ?? 0;
     $head_gender = $_POST['head_gender'] ?? '';
     $head_blood = $_POST['head_blood_type'] ?? 'Unknown';
-    $contact_number = $_POST['contact_number'] ?? '';
+    $head_cc = $_POST['head_country_code'] ?? '+63';
+    $head_cn = $_POST['head_contact'] ?? '';
+    $contact_number = trim($head_cc . ' ' . $head_cn);
 
     // Extract Head's screening and consent (idx = 0)
     $h_cond = $_POST['cond_0'] ?? 'No';
@@ -38,6 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $member_genders = $_POST['member_gender'] ?? [];
     $member_relationships = $_POST['member_relationship'] ?? [];
     $member_bloods = $_POST['member_blood_type'] ?? [];
+    $member_ccs = $_POST['member_country_code'] ?? [];
+    $member_contacts = $_POST['member_contact'] ?? [];
 
     try {
         $pdo->beginTransaction();
@@ -61,6 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $m_gender = $member_genders[$i] ?? '';
                 $m_rel = $member_relationships[$i] ?? 'Member';
                 $m_blood = $member_bloods[$i] ?? 'Unknown';
+                $m_contact = trim(($member_ccs[$i] ?? '+63') . ' ' . ($member_contacts[$i] ?? ''));
+                if ($m_contact === '+63' || $m_contact === '+1' || $m_contact === '+44' || $m_contact === '+61' || $m_contact === '+81' || $m_contact === '+86') {
+                    $m_contact = null; // Don't save if only country code
+                }
                 
                 if (empty(trim($m_name))) continue;
 
@@ -79,13 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $m_donated = $_POST['donated_'.$idx] ?? 'No';
                 $m_last_don = !empty($_POST['last_date_'.$idx]) ? $_POST['last_date_'.$idx] : null;
 
-                $memStmt = $pdo->prepare("INSERT INTO family_members (health_record_id, name, age, blood_type, existing_condition, condition_details, taking_medication, recent_surgery, pregnant, donor_consent, donated_before, last_donation_date, gender, relationship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $memStmt->execute([$health_record_id, $m_name, $m_age, $m_blood, $m_cond, $m_details, $m_meds, $m_surg, $m_preg, $m_consent, $m_donated, $m_last_don, $m_gender, $m_rel]);
+                $memStmt = $pdo->prepare("INSERT INTO family_members (health_record_id, name, age, blood_type, existing_condition, condition_details, taking_medication, recent_surgery, pregnant, donor_consent, donated_before, last_donation_date, gender, relationship, contact_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $memStmt->execute([$health_record_id, $m_name, $m_age, $m_blood, $m_cond, $m_details, $m_meds, $m_surg, $m_preg, $m_consent, $m_donated, $m_last_don, $m_gender, $m_rel, $m_contact]);
 
                 // Insert Member into donors if consented
                 if ($m_consent === 'Yes') {
                     $donorStmt = $pdo->prepare("INSERT INTO donors (user_id, name, age, contact_number, blood_type, status, last_donation) VALUES (?, ?, ?, ?, ?, 'screening', ?)");
-                    $donorStmt->execute([$user_id, $m_name, $m_age, $contact_number, $m_blood, $m_last_don]);
+                    $donorStmt->execute([$user_id, $m_name, $m_age, $m_contact ?? $contact_number, $m_blood, $m_last_don]);
                 }
             }
         }

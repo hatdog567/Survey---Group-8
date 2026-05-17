@@ -9,11 +9,17 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
-    $business_name = $_POST['business_name'] ?? '';
-    $owner_name = $_POST['owner_name'] ?? '';
-    $business_type = $_POST['business_type'] ?? '';
-    $contact_number = $_POST['contact_number'] ?? '';
-    $address = $_POST['address'] ?? '';
+    $business_name = trim($_POST['business_name'] ?? '');
+    $owner_name = trim($_POST['owner_name'] ?? '');
+    $business_type = trim($_POST['business_type'] ?? '');
+    $contact_number = trim($_POST['contact_number'] ?? '');
+    $address = trim($_POST['address'] ?? '');
+
+    // Server-side validation
+    if (empty($business_name) || empty($owner_name) || empty($business_type) || empty($contact_number) || empty($address)) {
+        echo json_encode(['success' => false, 'error' => 'All fields are required.']);
+        exit;
+    }
 
     $id_front = '';
     $id_back = '';

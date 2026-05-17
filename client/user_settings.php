@@ -169,7 +169,7 @@ if(strlen($initials)>2) $initials = substr($initials,0,2);
                             </div>
                             <div class="form-group" style="position: relative;">
                                 <label>New Password</label>
-                                <input type="password" name="new_password" required style="padding-right: 40px; width: 100%; box-sizing: border-box;">
+                                <input type="password" id="settings_new_password" name="new_password" required style="padding-right: 40px; width: 100%; box-sizing: border-box;" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" oninput="this.nextElementSibling.nextElementSibling.style.color = this.validity.patternMismatch ? '#dc2626' : 'var(--text-muted)'">
                                 <i class="ph ph-eye" onclick="togglePassword(this)" style="position: absolute; right: 12px; top: 38px; cursor: pointer; font-size: 20px; color: var(--text-muted);"></i>
                                 <small style="color: var(--text-muted); display: block; margin-top: 4px;">Must be at least 8 chars, 1 uppercase, 1 number, 1 special character.</small>
                             </div>
